@@ -1,0 +1,11 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": true,
+    "environment": "spo",
+    "version": "1.6.0",
+    "libraryName": "cosmodb-perfmon",
+    "libraryId": "e6170b44-14cd-4dfc-94af-e5fbd85d1f67",
+    "packageManager": "npm",
+    "componentType": "webpart"
+  }
+}

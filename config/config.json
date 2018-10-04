@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "cosmodb-perfmon-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/cosmodbPerfmon/CosmodbPerfmonWebPart.js",
+          "manifest": "./src/webparts/cosmodbPerfmon/CosmodbPerfmonWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "CosmodbPerfmonWebPartStrings": "lib/webparts/cosmodbPerfmon/loc/{locale}.js"
+  }
+}

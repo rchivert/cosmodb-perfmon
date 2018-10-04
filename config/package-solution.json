@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "cosmodb-perfmon",
+    "id": "e6170b44-14cd-4dfc-94af-e5fbd85d1f67",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "webApiPermissionRequests": [
+    {
+      "resource": "chiverton365-preferences-eastus",
+      "scope": "user_impersonation"
+    },
+    {
+      "resource": "chiverton365-preferences-japaneast",
+      "scope": "user_impersonation"
+    },
+    {
+      "resource": "chiverton365-preferences-westus",
+      "scope": "user_impersonation"
+    },
+    {
+      "resource": "chiverton365-preferences-westeurope",
+      "scope": "user_impersonation"
+    }
+  ]
+  },
+  "paths": {
+    "zippedPackage": "solution/cosmodb-perfmon.sppkg"
+  }
+}

@@ -20,20 +20,22 @@ export interface ICosmodbPerfmonWebPartProps {
   description: string;
 }
 
-type webAppRegion = "eastus"|"westus" | "japaneast" | "westeurope";
+type webAppRegion = "eastus"|"westus" | "japaneast" | "westeurope" | "brazilsouth"| "australiaeast"| "southindia";
 
 const testdata = {
   "id":"user2@domain.com",
   "links":[
-    {
-      "title":"title1x",
-      "url":"url1"
-    },
-    {
-      "title":"title2",
-      "url":"url2"
-    }
-    ],
+          { "title":"title1", "url":"url1"},
+          { "title":"title2", "url":"url2"},
+          { "title":"title3", "url":"url3"},
+          { "title":"title4", "url":"url4"},
+          { "title":"title5", "url":"url5"},
+          { "title":"title6", "url":"url6"},
+          { "title":"title7", "url":"url7"},
+          { "title":"title8", "url":"url8"},
+          { "title":"title9", "url":"url9"},
+          { "title":"title10","url":"url10"}
+          ],
   "color": "red"
 };
 
@@ -45,7 +47,7 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
   {
     //  Get the most-performant (closest) Azure Function WebApp
     var startedAt = Date.now();
-    var tmData = await this.getFastestWebApp();
+    var tmData = await this.getBestPerformingWebApp();
     var endedAt = Date.now();
     var elapsed = datefns.differenceInMilliseconds(endedAt, startedAt);
     tmData.duration = elapsed;
@@ -116,28 +118,42 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           webapp_uri = "https://chiverton365-preferences-eastus.azurewebsites.net";
           break;
           }
-
         case "japaneast":
           {
           webapp_appid = "40e47863-43e3-479e-b84f-47fc97d9303a";
           webapp_uri = "https://chiverton365-preferences-japaneast.azurewebsites.net";
           break;
           }
-
-          case "westus":
+        case "westus":
           {
           webapp_appid = "9f43acce-2a9c-4e7f-a9f4-806a5c7c8323";
           webapp_uri = "https://chiverton365-preferences-westus.azurewebsites.net";
           break;
           }
-
-          case "westeurope":
+        case "westeurope":
           {
           webapp_appid = "5d86e3db-8f26-47c3-822e-7d8521f5a1ea";
           webapp_uri = "https://chiverton365-preferences-westeurope.azurewebsites.net";
           break;
           }
-
+        case "brazilsouth":
+          {
+          webapp_appid = "44414382-41c0-461f-ad6d-660379eacb35";
+          webapp_uri = "https://chiverton365-preferences-brazilsouth.azurewebsites.net";
+          break;
+          }
+        case "australiaeast":
+          {
+          webapp_appid = "a0a0a44b-bbbf-415c-a867-f207d1056cab";
+          webapp_uri = "https://chiverton365-preferences-australiaeast.azurewebsites.net";
+          break;
+          }
+        case "southindia":
+          {
+          webapp_appid = "f038cf7a-b008-412f-8840-b25a1fbab6ff";
+          webapp_uri = "https://chiverton365-preferences-southindia.azurewebsites.net";
+          break;
+          }
         default:
           {
           throw new Error ('region not implemented');
@@ -198,14 +214,17 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     });
   }
 
-  private async getInitialTimings () : Promise<IDurations>
+  private async getAllTimings () : Promise<IDurations>
   {
-    let  durationTrafficManager : ITrafficManagerData        = {duration: 0, webapp_uri:"", webapp_appid:""};
-    let  durationUserProfile : IUPSTimingData                = {duration_function_get: 0, duration_function_post:0};
-    let  durationWebAppEASTUS : IAzureFunctionTimingData     = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
-    let  durationWebAppJAPANEAST : IAzureFunctionTimingData  = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
-    let  durationWebAppWESTEUROPE : IAzureFunctionTimingData = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
-    let  durationWebAppWESTUS : IAzureFunctionTimingData     = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
+    let  durationTrafficManager : ITrafficManagerData           = {duration: 0, webapp_uri:"", webapp_appid:""};
+    let  durationUserProfile : IUPSTimingData                   = {duration_function_get: 0, duration_function_post:0};
+    let  durationWebAppEASTUS : IAzureFunctionTimingData        = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
+    let  durationWebAppJAPANEAST : IAzureFunctionTimingData     = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
+    let  durationWebAppWESTEUROPE : IAzureFunctionTimingData    = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
+    let  durationWebAppWESTUS : IAzureFunctionTimingData        = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
+    let  durationWebAppBRAZILSOUTH : IAzureFunctionTimingData   = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
+    let  durationWebAppAUSTRALIAEAST : IAzureFunctionTimingData = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
+    let  durationWebAppSOUTHINDIA : IAzureFunctionTimingData    = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
 
     // run these in parallel
     let d0 = this.getTrafficManagerTiming();
@@ -214,6 +233,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     let d3 = this.getWebAppTiming("westus");
     let d4 = this.getWebAppTiming("westeurope");
     let d5 = this.getWebAppTiming("japaneast");
+    let d6 = this.getWebAppTiming("brazilsouth");
+    let d7 = this.getWebAppTiming("australiaeast");
+    let d8 = this.getWebAppTiming("southindia");
 
     durationTrafficManager    = await d0;
     durationUserProfile       = await d1;
@@ -221,21 +243,27 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     durationWebAppWESTUS      = await d3;
     durationWebAppWESTEUROPE  = await d4;
     durationWebAppJAPANEAST   = await d5;
+    durationWebAppBRAZILSOUTH  = await d6;
+    durationWebAppAUSTRALIAEAST = await d7;
+    durationWebAppSOUTHINDIA    = await d8;
 
     return new Promise<IDurations>(resolve => {
         let durations : IDurations = {
-                  "durationTrafficManager":   durationTrafficManager,
-                  "durationUserProfile":      durationUserProfile,
-                  "durationWebAppEASTUS":     durationWebAppEASTUS,
-                  "durationWebAppJAPANEAST":  durationWebAppJAPANEAST,
-                  "durationWebAppWESTUS":     durationWebAppWESTUS,
-                  "durationWebAppWESTEUROPE": durationWebAppWESTEUROPE
+                  "durationTrafficManager":       durationTrafficManager,
+                  "durationUserProfile":          durationUserProfile,
+                  "durationWebAppEASTUS":         durationWebAppEASTUS,
+                  "durationWebAppJAPANEAST":      durationWebAppJAPANEAST,
+                  "durationWebAppWESTUS":         durationWebAppWESTUS,
+                  "durationWebAppWESTEUROPE":     durationWebAppWESTEUROPE,
+                  "durationWebAppBRAZILSOUTH":    durationWebAppBRAZILSOUTH,
+                  "durationWebAppAUSTRALIAEAST":  durationWebAppAUSTRALIAEAST,
+                  "durationWebAppSOUTHINDIA":     durationWebAppSOUTHINDIA
                 };
         resolve(durations);
       });
   }
 
-  private async getFastestWebApp () : Promise<ITrafficManagerData>
+  private async getBestPerformingWebApp () : Promise<ITrafficManagerData>
     {
       //  Get the URL of the most-performant Azure Function WebApp
       //
@@ -258,36 +286,43 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
       });
     }
 
-  public onInit(): Promise<any> {
+    public onInit(): Promise<any> {
 
-    return super.onInit().then(_x => {
+      return super.onInit().then(_x => {
 
-      // other init code may be present
+        // other init code may be present
 
-      pnpSetup({
-        spfxContext: this.context
-      });
+        pnpSetup({
+          spfxContext: this.context
+        });
 
-      //  Use custom myPromise to control when render gets called (https://sharepoint.stackexchange.com/questions/222515/sharepoint-framework-spfx-oninit-promises/222627)
-      //
-      this.myPromise = this.getInitialTimings();
-      });
-  }
+        //  Use custom myPromise to control when render gets called (https://sharepoint.stackexchange.com/questions/222515/sharepoint-framework-spfx-oninit-promises/222627)
+        //
+        this.myPromise = this.getAllTimings();
+        });
+    }
+
+    private refreshChart() : void
+      {
+      this.myPromise = this.getAllTimings();
+      this.render();
+      }
 
     public render(): void {
+      this.context.statusRenderer.displayLoadingIndicator(this.domElement, "Azure Region timings (CosmosDB Perfmon).");
       this.myPromise.then ((durations : IDurations) =>{
         console.log("render");
+        this.context.statusRenderer.clearLoadingIndicator(this.domElement);
         const element: React.ReactElement<ICosmodbPerfmonWebPartProps > = React.createElement(
           CosmodbPerfmon,
           {
             description: this.properties.description,
             ctx: this.context,
-            durations: durations
+            durations: durations,
+            buttonclick: this.refreshChart.bind(this)
           }
         );
-
         ReactDom.render(element, this.domElement);
-
       }).catch(e => {
         console.log(e);
         });

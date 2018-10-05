@@ -3,7 +3,7 @@
   "solution": {
     "name": "cosmodb-perfmon",
     "id": "e6170b44-14cd-4dfc-94af-e5fbd85d1f67",
-    "version": "1.0.0.0",
+    "version": "1.0.0.8",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
     {
@@ -11,15 +11,15 @@
       "scope": "user_impersonation"
     },
     {
-      "resource": "chiverton365-preferences-japaneast",
+      "resource": "chiverton365-preferences-brazilsouth",
       "scope": "user_impersonation"
     },
     {
-      "resource": "chiverton365-preferences-westus",
+      "resource": "chiverton365-preferences-australiaeast",
       "scope": "user_impersonation"
     },
     {
-      "resource": "chiverton365-preferences-westeurope",
+      "resource": "chiverton365-preferences-southindia",
       "scope": "user_impersonation"
     }
   ]

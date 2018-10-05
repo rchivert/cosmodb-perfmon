@@ -22,10 +22,17 @@ export interface IDurations {
   durationWebAppJAPANEAST : IAzureFunctionTimingData;
   durationWebAppWESTUS : IAzureFunctionTimingData;
   durationWebAppWESTEUROPE : IAzureFunctionTimingData;
+  durationWebAppBRAZILSOUTH : IAzureFunctionTimingData;
+  durationWebAppAUSTRALIAEAST : IAzureFunctionTimingData;
+  durationWebAppSOUTHINDIA : IAzureFunctionTimingData;
 }
 
 export interface ICosmodbPerfmonProps {
   description: string;
   ctx: WebPartContext;
   durations : IDurations;
+  buttonclick: () => void;
 }
+
+
+

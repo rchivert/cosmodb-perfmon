@@ -3,7 +3,7 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 export interface ITrafficManagerData {
   webapp_uri: string;
   webapp_appid: string;
-  duration: number;
+  regionDurations: number [];  //  durations - all zeros except for region returned by tm
 }
 export interface IUPSTimingData {
   duration_function_get: number ;    // duration of the Azure Function call round-trip, minus the cosmos db portion

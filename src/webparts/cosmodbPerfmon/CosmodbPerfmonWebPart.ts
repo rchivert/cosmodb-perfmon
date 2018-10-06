@@ -50,7 +50,19 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     var tmData = await this.getBestPerformingWebApp();
     var endedAt = Date.now();
     var elapsed = datefns.differenceInMilliseconds(endedAt, startedAt);
-    tmData.duration = elapsed;
+
+    const url = tmData.webapp_uri;
+
+    if (url.length > 0)
+      {
+             if (url.search("eastus") !== -1)        tmData.regionDurations[1] = elapsed ;
+        else if (url.search("westus") !== -1)        tmData.regionDurations[2] = elapsed ;
+        else if (url.search("westeurope") !== -1)    tmData.regionDurations[3] = elapsed ;
+        else if (url.search("japaneast") !== -1)     tmData.regionDurations[4] = elapsed ;
+        else if (url.search("brazilsouth") !== -1)   tmData.regionDurations[5] = elapsed ;
+        else if (url.search("australiaeast") !== -1) tmData.regionDurations[6] = elapsed ;
+        else if (url.search("southindia") !== -1)    tmData.regionDurations[7] = elapsed ;
+      }
 
     return new Promise<ITrafficManagerData>(resolve => {
       resolve(tmData);
@@ -216,7 +228,7 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
 
   private async getAllTimings () : Promise<IDurations>
   {
-    let  durationTrafficManager : ITrafficManagerData           = {duration: 0, webapp_uri:"", webapp_appid:""};
+    let  durationTrafficManager : ITrafficManagerData           = {webapp_uri:"", webapp_appid:"", regionDurations:[]};
     let  durationUserProfile : IUPSTimingData                   = {duration_function_get: 0, duration_function_post:0};
     let  durationWebAppEASTUS : IAzureFunctionTimingData        = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
     let  durationWebAppJAPANEAST : IAzureFunctionTimingData     = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
@@ -246,6 +258,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     durationWebAppBRAZILSOUTH  = await d6;
     durationWebAppAUSTRALIAEAST = await d7;
     durationWebAppSOUTHINDIA    = await d8;
+
+    //  determine which region was selected by Traffic Mgr (and show for that region's stacked bar)
+
 
     return new Promise<IDurations>(resolve => {
         let durations : IDurations = {
@@ -281,7 +296,7 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
 
       return new Promise<ITrafficManagerData> (resolve => {
         console.log("response from traffic mgr 'hello' = " + JSON.stringify(s));
-        let trafficMgrData : ITrafficManagerData = {webapp_appid: s.appid, webapp_uri: s.url, duration: 0};
+        let trafficMgrData : ITrafficManagerData = {webapp_appid: s.appid, webapp_uri: s.url, regionDurations: [0,0,0,0,0,0,0,0]};
         resolve(trafficMgrData);
       });
     }
@@ -309,7 +324,7 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
       }
 
     public render(): void {
-      this.context.statusRenderer.displayLoadingIndicator(this.domElement, "Azure Region timings (CosmosDB Perfmon).");
+      this.context.statusRenderer.displayLoadingIndicator(this.domElement, "Azure Region timings for CosmosDB Perfmon.");
       this.myPromise.then ((durations : IDurations) =>{
         console.log("render");
         this.context.statusRenderer.clearLoadingIndicator(this.domElement);

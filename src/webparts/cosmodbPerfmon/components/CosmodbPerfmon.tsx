@@ -225,13 +225,13 @@ export default class CosmodbPerfmon extends React.Component<ICosmodbPerfmonProps
         },
         {
           name: 'Traffic Manager - GET',
-          data: [0,this.props.durations.durationTrafficManager.duration, this.props.durations.durationTrafficManager.duration,this.props.durations.durationTrafficManager.duration, this.props.durations.durationTrafficManager.duration,this.props.durations.durationTrafficManager.duration, this.props.durations.durationTrafficManager.duration,this.props.durations.durationTrafficManager.duration],
+          data: this.props.durations.durationTrafficManager.regionDurations,
           stack: 'GET',
           color: "#A0A0A0"
         },
         {
           name: 'Traffic Manager - POST',
-          data: [0,this.props.durations.durationTrafficManager.duration, this.props.durations.durationTrafficManager.duration,this.props.durations.durationTrafficManager.duration, this.props.durations.durationTrafficManager.duration,this.props.durations.durationTrafficManager.duration, this.props.durations.durationTrafficManager.duration,this.props.durations.durationTrafficManager.duration],
+          data: this.props.durations.durationTrafficManager.regionDurations,
           stack: 'POST',
           color: "#A0A0A0",
           dataLabels: {enabled:false}

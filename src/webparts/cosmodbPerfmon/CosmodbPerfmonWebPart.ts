@@ -239,7 +239,7 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     let  durationWebAppSOUTHINDIA : IAzureFunctionTimingData    = {duration_function_get: 0, duration_function_post:0, duration_cosmos_get: 0, duration_cosmos_post:0};
 
     // run these in parallel
-    let d0 = this.getTrafficManagerTiming();
+    // let d0 = this.getTrafficManagerTiming();
     let d1 = this.getUserProfileTiming();
     let d2 = this.getWebAppTiming("eastus");
     let d3 = this.getWebAppTiming("westus");
@@ -249,7 +249,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     let d7 = this.getWebAppTiming("australiaeast");
     let d8 = this.getWebAppTiming("southindia");
 
-    durationTrafficManager    = await d0;
+    //durationTrafficManager    = await d0;
+
+    durationTrafficManager    = {webapp_uri: "https://chiverton365-preferences-eastus.azurewebsites.net", webapp_appid: "0", regionDurations: [0,106,0,0,0,0,0,0]};
     durationUserProfile       = await d1;
     durationWebAppEASTUS      = await d2;
     durationWebAppWESTUS      = await d3;

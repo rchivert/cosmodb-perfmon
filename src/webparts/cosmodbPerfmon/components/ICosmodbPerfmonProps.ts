@@ -3,7 +3,7 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 export interface ITrafficManagerData {
   webapp_uri: string;
   webapp_appid: string;
-  regionDurations: number [];  //  durations - all zeros except for region returned by tm
+  duration:  number;  //  duration of call to TM to get best performing region
 }
 export interface IUPSTimingData {
   duration_function_get: number ;    // duration of the Azure Function call round-trip, minus the cosmos db portion
@@ -25,6 +25,13 @@ export interface IDurations {
   durationWebAppBRAZILSOUTH : IAzureFunctionTimingData;
   durationWebAppAUSTRALIAEAST : IAzureFunctionTimingData;
   durationWebAppSOUTHINDIA : IAzureFunctionTimingData;
+  durationWebApp2EASTUS : IAzureFunctionTimingData;
+  durationWebApp2JAPANEAST : IAzureFunctionTimingData;
+  durationWebApp2WESTUS : IAzureFunctionTimingData;
+  durationWebApp2WESTEUROPE : IAzureFunctionTimingData;
+  durationWebApp2BRAZILSOUTH : IAzureFunctionTimingData;
+  durationWebApp2AUSTRALIAEAST : IAzureFunctionTimingData;
+  durationWebApp2SOUTHINDIA : IAzureFunctionTimingData;
 }
 
 export interface ICosmodbPerfmonProps {

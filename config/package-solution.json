@@ -3,23 +3,35 @@
   "solution": {
     "name": "cosmodb-perfmon",
     "id": "e6170b44-14cd-4dfc-94af-e5fbd85d1f67",
-    "version": "1.0.0.8",
+    "version": "1.0.0.19",
     "includeClientSideAssets": true,
     "webApiPermissionRequests": [
     {
-      "resource": "chiverton365-preferences-eastus",
+      "resource": "chiverton365-preferences2-southindia",
       "scope": "user_impersonation"
     },
     {
-      "resource": "chiverton365-preferences-brazilsouth",
+      "resource": "chiverton365-preferences2-westus",
       "scope": "user_impersonation"
     },
     {
-      "resource": "chiverton365-preferences-australiaeast",
+      "resource": "chiverton365-preferences2-westeurope",
       "scope": "user_impersonation"
     },
     {
-      "resource": "chiverton365-preferences-southindia",
+      "resource": "chiverton365-preferences2-japaneast",
+      "scope": "user_impersonation"
+    },
+    {
+      "resource": "chiverton365-preferences2-brazilsouth",
+      "scope": "user_impersonation"
+    },
+    {
+      "resource": "chiverton365-preferences2-australiaeast",
+      "scope": "user_impersonation"
+    },
+    {
+      "resource": "chiverton365-preferences2-eastus",
       "scope": "user_impersonation"
     }
   ]

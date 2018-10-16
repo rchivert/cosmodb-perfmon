@@ -17,6 +17,23 @@ export default class CosmodbPerfmon extends React.Component<ICosmodbPerfmonProps
 
   public render(): React.ReactElement<ICosmodbPerfmonProps> {
 
+    const colorUPSGET    = "#EDFFAB";
+    const colorUPSPOST   = "#7ea16b";
+
+    const colorAzureGETConsumption    = "#59B4FF";
+    const colorAzureGETAppservice     = "#0A74CC";
+
+    const colorAzurePOSTConsumption   = "#c0aca5";
+    const colorAzurePOSTAppservice    = "#8d7b76";
+
+    const colorCOSMOS     = "3d3a45";
+    const borderWidth     = 0;
+    const borderColor     = "red";
+
+    const showInLegend    = false;
+
+
+
     const optionsHighChart = {
       chart: {
         type: 'bar',
@@ -46,195 +63,524 @@ export default class CosmodbPerfmon extends React.Component<ICosmodbPerfmonProps
         series: [{
           name: 'User Profile - GET',
           data: [this.props.durations.durationUserProfile.duration_function_get],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorUPSGET,
+          borderWidth: 1,
+          borderColor: 'black',
+          showInLegend: showInLegend
         },
         {
           name: 'User Profile - POST',
           data: [this.props.durations.durationUserProfile.duration_function_post],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '2',
+          color: colorUPSPOST,
+          borderWidth: 1,
+          borderColor: 'black',
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (US East) - Cosmos Read',
+          name: 'Cosmos Read (useast - consumption)',
           data: [0,this.props.durations.durationWebAppEASTUS.duration_cosmos_get,0],
-          stack: 'GET',
-          color: "#000000"
+          stack: '1',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (US East) - Cosmos Write',
-          data: [0,this.props.durations.durationWebAppEASTUS.duration_cosmos_post,0],
-          stack: 'POST',
-          color: "#000000"
-        },
-        {
-          name: 'Cosmos (US East) - AzFunc GET',
+          name: 'AzFunc GET (useast - consumption)',
           data: [0,this.props.durations.durationWebAppEASTUS.duration_function_get,0],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorAzureGETConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzureGETConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (US East) - AzFunc POST',
+          name: 'Cosmos Read (useast - appservice)',
+          data: [0,this.props.durations.durationWebApp2EASTUS.duration_cosmos_get,0],
+          stack: '2',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc GET (useast - appservice)',
+          data: [0,this.props.durations.durationWebApp2EASTUS.duration_function_get,0],
+          stack: '2',
+          color: colorAzureGETAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Write (useast - consumption)',
+          data: [0,this.props.durations.durationWebAppEASTUS.duration_cosmos_post,0],
+          stack: '3',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (useast - consumption)',
           data: [0,this.props.durations.durationWebAppEASTUS.duration_function_post,0],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '3',
+          color: colorAzurePOSTConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzurePOSTConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (US West) - Cosmos Read',
+          name: 'Cosmos Write (useast - appservice)',
+          data: [0,this.props.durations.durationWebApp2EASTUS.duration_cosmos_post,0],
+          stack: '4',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (useast - appservice)',
+          data: [0,this.props.durations.durationWebApp2EASTUS.duration_function_post,0],
+          stack: '4',
+          color: colorAzurePOSTAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Read (uswest - consumption)',
           data: [0,0,this.props.durations.durationWebAppWESTUS.duration_cosmos_get],
-          stack: 'GET',
-          color: "#000000"
+          stack: '1',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (US West) - Cosmos Write',
-          data: [0,0,this.props.durations.durationWebAppWESTUS.duration_cosmos_post],
-          stack: 'POST',
-          color: "#000000"
-        },
-        {
-          name: 'Cosmos (US West) - AzFunc GET',
+          name: 'AzFunc GET (uswest - consumption)',
           data: [0,0,this.props.durations.durationWebAppWESTUS.duration_function_get],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorAzureGETConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzureGETConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (US West) - AzFunc POST',
+          name: 'Cosmos Read (uswest - appservice)',
+          data: [0,0,this.props.durations.durationWebApp2WESTUS.duration_cosmos_get],
+          stack: '2',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc GET (uswest - appservice)',
+          data: [0,0,this.props.durations.durationWebApp2WESTUS.duration_function_get],
+          stack: '2',
+          color: colorAzureGETAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Write (uswest - consumption)',
+          data: [0,0,this.props.durations.durationWebAppWESTUS.duration_cosmos_post],
+          stack: '3',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (uswest - consumption)',
           data: [0,0,this.props.durations.durationWebAppWESTUS.duration_function_post],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '3',
+          color: colorAzurePOSTConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzurePOSTConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (West Europe) - Cosmos Read',
+          name: 'Cosmos Write (uswest - appservice)',
+          data: [0,0,this.props.durations.durationWebApp2WESTUS.duration_cosmos_post],
+          stack: '4',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (uswest - appservice)',
+          data: [0,0,this.props.durations.durationWebApp2WESTUS.duration_function_post],
+          stack: '4',
+          color: colorAzurePOSTAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Read (westeurope - consumption)',
           data: [0,0,0,this.props.durations.durationWebAppWESTEUROPE.duration_cosmos_get],
-          stack: 'GET',
-          color: "#000000"
+          stack: '1',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (West Europe) - Cosmos Write',
-          data: [0,0,0,this.props.durations.durationWebAppWESTEUROPE.duration_cosmos_post],
-          stack: 'POST',
-          color: "#000000"
-        },
-        {
-          name: 'Cosmos (West Europe) - AzFunc GET',
+          name: 'AzFunc GET (westeurope - consumption)',
           data: [0,0,0,this.props.durations.durationWebAppWESTEUROPE.duration_function_get],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorAzureGETConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzureGETConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (West Europe) - AzFunc POST',
+          name: 'Cosmos Read (westeurope - appservice)',
+          data: [0,0,0,this.props.durations.durationWebApp2WESTEUROPE.duration_cosmos_get],
+          stack: '2',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc GET (westeurope - appservice)',
+          data: [0,0,0,this.props.durations.durationWebApp2WESTEUROPE.duration_function_get],
+          stack: '2',
+          color: colorAzureGETAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Write (westeurope - consumption)',
+          data: [0,0,0,this.props.durations.durationWebAppWESTEUROPE.duration_cosmos_post],
+          stack: '3',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (westeurope - consumption)',
           data: [0,0,0,this.props.durations.durationWebAppWESTEUROPE.duration_function_post],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '3',
+          color: colorAzurePOSTConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzurePOSTConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Japan East) - Cosmos Read',
+          name: 'Cosmos Write (westeurope - appservice)',
+          data: [0,0,0,this.props.durations.durationWebApp2WESTEUROPE.duration_cosmos_post],
+          stack: '4',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (westeurope - appservice)',
+          data: [0,0,0,this.props.durations.durationWebApp2WESTEUROPE.duration_function_post],
+          stack: '4',
+          color: colorAzurePOSTAppservice,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Read (japaneast - consumption)',
           data: [0,0,0,0,this.props.durations.durationWebAppJAPANEAST.duration_cosmos_get],
-          stack: 'GET',
-          color: "#000000"
+          stack: '1',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Japan East) - Cosmos Write',
-          data: [0,0,0,0,this.props.durations.durationWebAppJAPANEAST.duration_cosmos_post],
-          stack: 'POST',
-          color: "#000000"
-        },
-        {
-          name: 'Cosmos (Japan East) - AzFunc GET',
+          name: 'AzFunc GET (japaneast - consumption)',
           data: [0,0,0,0,this.props.durations.durationWebAppJAPANEAST.duration_function_get],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorAzureGETConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzureGETConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Japan East) - AzFunc POST',
+          name: 'Cosmos Read (japaneast - appservice)',
+          data: [0,0,0,0,this.props.durations.durationWebApp2JAPANEAST.duration_cosmos_get],
+          stack: '2',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc GET (japaneast - appservice)',
+          data: [0,0,0,0,this.props.durations.durationWebApp2JAPANEAST.duration_function_get],
+          stack: '2',
+          color: colorAzureGETAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Write (japaneast - consumption)',
+          data: [0,0,0,0,this.props.durations.durationWebAppJAPANEAST.duration_cosmos_post],
+          stack: '3',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (japaneast - consumption)',
           data: [0,0,0,0,this.props.durations.durationWebAppJAPANEAST.duration_function_post],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '3',
+          color: colorAzurePOSTConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzurePOSTConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Brazil South) - Cosmos Read',
+          name: 'Cosmos Write (japaneast - appservice)',
+          data: [0,0,0,0,this.props.durations.durationWebApp2JAPANEAST.duration_cosmos_post],
+          stack: '4',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (japaneast - appservice)',
+          data: [0,0,0,0,this.props.durations.durationWebApp2JAPANEAST.duration_function_post],
+          stack: '4',
+          color: colorAzurePOSTAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Read (brazilsouth - consumption)',
           data: [0,0,0,0,0,this.props.durations.durationWebAppBRAZILSOUTH.duration_cosmos_get],
-          stack: 'GET',
-          color: "#000000"
+          stack: '1',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Brazil South) - Cosmos Write',
-          data: [0,0,0,0,0,this.props.durations.durationWebAppBRAZILSOUTH.duration_cosmos_post],
-          stack: 'POST',
-          color: "#000000"
-        },
-        {
-          name: 'Cosmos (Brazil South) - AzFunc GET',
+          name: 'AzFunc GET (brazilsouth - consumption)',
           data: [0,0,0,0,0,this.props.durations.durationWebAppBRAZILSOUTH.duration_function_get],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorAzureGETConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzureGETConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Brazil South) - AzFunc POST',
+          name: 'Cosmos Read (brazilsouth - appservice)',
+          data: [0,0,0,0,0,this.props.durations.durationWebApp2BRAZILSOUTH.duration_cosmos_get],
+          stack: '2',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc GET (brazilsouth - appservice)',
+          data: [0,0,0,0,0,this.props.durations.durationWebApp2BRAZILSOUTH.duration_function_get],
+          stack: '2',
+          color: colorAzureGETAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Write (brazilsouth - consumption)',
+          data: [0,0,0,0,0,this.props.durations.durationWebAppBRAZILSOUTH.duration_cosmos_post],
+          stack: '3',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (brazilsouth - consumption)',
           data: [0,0,0,0,0,this.props.durations.durationWebAppBRAZILSOUTH.duration_function_post],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '3',
+          color: colorAzurePOSTConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzurePOSTConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Australia East) - Cosmos Read',
+          name: 'Cosmos Write (brazilsouth - appservice)',
+          data: [0,0,0,0,0,this.props.durations.durationWebApp2BRAZILSOUTH.duration_cosmos_post],
+          stack: '4',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (brazilsouth - appservice)',
+          data: [0,0,0,0,0,this.props.durations.durationWebApp2BRAZILSOUTH.duration_function_post],
+          stack: '4',
+          color: colorAzurePOSTAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Read (australiaeast - consumption)',
           data: [0,0,0,0,0,0,this.props.durations.durationWebAppAUSTRALIAEAST.duration_cosmos_get],
-          stack: 'GET',
-          color: "#000000"
+          stack: '1',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Australia East) - Cosmos Write',
-          data: [0,0,0,0,0,0,this.props.durations.durationWebAppAUSTRALIAEAST.duration_cosmos_post],
-          stack: 'POST',
-          color: "#000000"
-        },
-        {
-          name: 'Cosmos (Australia East) - AzFunc GET',
+          name: 'AzFunc GET (australiaeast - consumption)',
           data: [0,0,0,0,0,0,this.props.durations.durationWebAppAUSTRALIAEAST.duration_function_get],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorAzureGETConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzureGETConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (Australia East) - AzFunc POST',
+          name: 'Cosmos Read (australiaeast - appservice)',
+          data: [0,0,0,0,0,0,this.props.durations.durationWebApp2AUSTRALIAEAST.duration_cosmos_get],
+          stack: '2',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc GET (australiaeast - appservice)',
+          data: [0,0,0,0,0,0,this.props.durations.durationWebApp2AUSTRALIAEAST.duration_function_get],
+          stack: '2',
+          color: colorAzureGETAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Write (australiaeast - consumption)',
+          data: [0,0,0,0,0,0,this.props.durations.durationWebAppAUSTRALIAEAST.duration_cosmos_post],
+          stack: '3',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (australiaeast - consumption)',
           data: [0,0,0,0,0,0,this.props.durations.durationWebAppAUSTRALIAEAST.duration_function_post],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '3',
+          color: colorAzurePOSTConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzurePOSTConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (South India) - Cosmos Read',
+          name: 'Cosmos Write (australiaeast - appservice)',
+          data: [0,0,0,0,0,0,this.props.durations.durationWebApp2AUSTRALIAEAST.duration_cosmos_post],
+          stack: '4',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (australiaeast - appservice)',
+          data: [0,0,0,0,0,0,this.props.durations.durationWebApp2AUSTRALIAEAST.duration_function_post],
+          stack: '4',
+          color: colorAzurePOSTAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Read (southindia - consumption)',
           data: [0,0,0,0,0,0,0,this.props.durations.durationWebAppSOUTHINDIA.duration_cosmos_get],
-          stack: 'GET',
-          color: "#000000"
+          stack: '1',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (South India) - Cosmos Write',
-          data: [0,0,0,0,0,0,0,this.props.durations.durationWebAppSOUTHINDIA.duration_cosmos_post],
-          stack: 'POST',
-          color: "#000000"
-        },
-        {
-          name: 'Cosmos (South India) - AzFunc GET',
+          name: 'AzFunc GET (southindia - consumption)',
           data: [0,0,0,0,0,0,0,this.props.durations.durationWebAppSOUTHINDIA.duration_function_get],
-          stack: 'GET',
-          color: "#66B2FF"
+          stack: '1',
+          color: colorAzureGETConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzureGETConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Cosmos (South India) - AzFunc POST',
+          name: 'Cosmos Read (southindia - appservice)',
+          data: [0,0,0,0,0,0,0,this.props.durations.durationWebApp2SOUTHINDIA.duration_cosmos_get],
+          stack: '2',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc GET (southindia - appservice)',
+          data: [0,0,0,0,0,0,0,this.props.durations.durationWebApp2SOUTHINDIA.duration_function_get],
+          stack: '2',
+          color: colorAzureGETAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'Cosmos Write (southindia - consumption)',
+          data: [0,0,0,0,0,0,0,this.props.durations.durationWebAppSOUTHINDIA.duration_cosmos_post],
+          stack: '3',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
+        },
+        {
+          name: 'AzFunc POST (southindia - consumption)',
           data: [0,0,0,0,0,0,0,this.props.durations.durationWebAppSOUTHINDIA.duration_function_post],
-          stack: 'POST',
-          color: "#6666FF"
+          stack: '3',
+          color: colorAzurePOSTConsumption,
+          borderWidth: borderWidth,
+          borderColor: colorAzurePOSTConsumption,
+          showInLegend: showInLegend
         },
         {
-          name: 'Traffic Manager - GET',
-          data: this.props.durations.durationTrafficManager.regionDurations,
-          stack: 'GET',
-          color: "#A0A0A0"
+          name: 'Cosmos Write (southindia - appservice)',
+          data: [0,0,0,0,0,0,0,this.props.durations.durationWebApp2SOUTHINDIA.duration_cosmos_post],
+          stack: '4',
+          color: colorCOSMOS,
+          borderWidth: borderWidth,
+          borderColor: colorCOSMOS,
+          showInLegend: showInLegend
         },
         {
-          name: 'Traffic Manager - POST',
-          data: this.props.durations.durationTrafficManager.regionDurations,
-          stack: 'POST',
-          color: "#A0A0A0",
-          dataLabels: {enabled:false}
+          name: 'AzFunc POST (southindia - appservice)',
+          data: [0,0,0,0,0,0,0,this.props.durations.durationWebApp2SOUTHINDIA.duration_function_post],
+          stack: '4',
+          color: colorAzurePOSTAppservice,
+          borderWidth: borderWidth,
+          borderColor: borderColor,
+          showInLegend: showInLegend
         }]
       };
 
@@ -244,7 +590,7 @@ export default class CosmodbPerfmon extends React.Component<ICosmodbPerfmonProps
           <div>
             <table>
               <tr>
-                <td>(Traffic Manager recommended Web API = {this.props.durations.durationTrafficManager.webapp_uri})&nbsp;</td>
+                <td>(Traffic Manager: recommended Web API = {this.props.durations.durationTrafficManager.webapp_uri}&nbsp;, Initial delay = {this.props.durations.durationTrafficManager.duration} Milliseconds)</td>
                 <td><button className="ms-Button ms-button--primary" onClick={this.props.buttonclick}>refresh</button></td>
               </tr>
               </table>

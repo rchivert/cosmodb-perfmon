@@ -13,7 +13,6 @@ import { ICosmodbPerfmonProps, ITrafficManagerData, IAzureFunctionTimingData, IU
 
 import { HttpClientResponse, IHttpClientOptions, HttpClient, AadHttpClient  } from '@microsoft/sp-http';
 import { setup as pnpSetup } from "@pnp/common";
-import * as datefns from 'date-fns';
 import SPUserProfileService from '../../services/SPUserProfileService';
 
 export interface ICosmodbPerfmonWebPartProps {
@@ -21,6 +20,31 @@ export interface ICosmodbPerfmonWebPartProps {
 }
 
 type webAppRegion = "eastus"|"westus" | "japaneast" | "westeurope" | "brazilsouth"| "australiaeast"| "southindia";
+
+interface IRegionData {
+  webapp_appid: string;
+  webapp_uri: string;
+  }
+
+const myRegionData = new Map<webAppRegion, IRegionData>([
+  ["eastus",        {webapp_appid: "a9451f9d-7703-41cc-8d7a-fece0fc8e080", webapp_uri: "https://chiverton365-preferences-eastus.azurewebsites.net"}],
+  ["japaneast",     {webapp_appid: "40e47863-43e3-479e-b84f-47fc97d9303a", webapp_uri: "https://chiverton365-preferences-japaneast.azurewebsites.net"}],
+  ["westus",        {webapp_appid: "9f43acce-2a9c-4e7f-a9f4-806a5c7c8323", webapp_uri: "https://chiverton365-preferences-westus.azurewebsites.net"}],
+  ["westeurope",    {webapp_appid: "5d86e3db-8f26-47c3-822e-7d8521f5a1ea", webapp_uri: "https://chiverton365-preferences-westeurope.azurewebsites.net"}],
+  ["brazilsouth",   {webapp_appid: "44414382-41c0-461f-ad6d-660379eacb35", webapp_uri: "https://chiverton365-preferences-brazilsouth.azurewebsites.net"}],
+  ["australiaeast", {webapp_appid: "a0a0a44b-bbbf-415c-a867-f207d1056cab", webapp_uri: "https://chiverton365-preferences-australiaeast.azurewebsites.net"}],
+  ["southindia",    {webapp_appid: "f038cf7a-b008-412f-8840-b25a1fbab6ff", webapp_uri: "https://chiverton365-preferences-southindia.azurewebsites.net"}]
+]);
+
+const myRegionData2 = new Map<webAppRegion, IRegionData>([
+  ["eastus",        {webapp_appid: "2b23954e-b97b-41f0-88b7-de47d19fc653", webapp_uri: "https://chiverton365-preferences2-eastus.azurewebsites.net"}],
+  ["japaneast",     {webapp_appid: "3d326fa7-ef51-4634-8e33-4f0cebe09b3f", webapp_uri: "https://chiverton365-preferences2-japaneast.azurewebsites.net"}],
+  ["westus",        {webapp_appid: "93c9dfd4-848a-45a8-8997-9b21302162b5", webapp_uri: "https://chiverton365-preferences2-westus.azurewebsites.net"}],
+  ["westeurope",    {webapp_appid: "12d2973c-9945-4c53-ae09-30a79c98d18d", webapp_uri: "https://chiverton365-preferences2-westeurope.azurewebsites.net"}],
+  ["brazilsouth",   {webapp_appid: "7b40a34c-74bb-4770-9028-90864e2a697a", webapp_uri: "https://chiverton365-preferences2-brazilsouth.azurewebsites.net"}],
+  ["australiaeast", {webapp_appid: "c8759268-e08c-4182-a702-e2f5a3d81063", webapp_uri: "https://chiverton365-preferences2-australiaeast.azurewebsites.net"}],
+  ["southindia",    {webapp_appid: "35144c2a-6dc4-4192-887c-6459ec4ed1bf", webapp_uri: "https://chiverton365-preferences2-southindia.azurewebsites.net"}]
+]);
 
 const testdata = {
   "id":"user2@domain.com",
@@ -59,13 +83,16 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
   private aadClient2AUSTRALIAEAST : AadHttpClient | undefined;
   private aadClient2SOUTHINDIA : AadHttpClient | undefined;
 
+  private regionData: IRegionData[] = [];
+
+
   private async getTrafficManagerTiming () : Promise<ITrafficManagerData>
   {
     //  Get the most-performant (closest) Azure Function WebApp
-    var startedAt = Date.now();
+    var startedAt = performance.now();
     var tmData = await this.getBestPerformingWebApp();
-    var endedAt = Date.now();
-    var elapsed = datefns.differenceInMilliseconds(endedAt, startedAt);
+    var endedAt = performance.now();
+    var elapsed = Math.round(endedAt - startedAt);
 
     const url = tmData.webapp_uri;
 
@@ -89,17 +116,17 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
 
       // save the personal links in the UPS
       console.log("posting data to UPS");
-      let startedAt = Date.now();
+      let startedAt = performance.now();
       var response = await upsService.setUserProfileProperty("PnP-CollabFooter-MyLinks",'String', JSON.stringify(testdata));
-      let endedAt = Date.now();
-      let elapsedPost = datefns.differenceInMilliseconds(endedAt, startedAt);
+      let endedAt = performance.now();
+      let elapsedPost = Math.round(endedAt - startedAt);
 
       // retrieve the links from the UPS
       console.log("getting data from UPS");
-      startedAt = Date.now();
+      startedAt = performance.now();
       let myLinksJson: any = await upsService.getUserProfileProperty("PnP-CollabFooter-MyLinks");
-      endedAt = Date.now();
-      let elapsedGet = datefns.differenceInMilliseconds(endedAt, startedAt);
+      endedAt = performance.now();
+      let elapsedGet = Math.round(endedAt - startedAt);
       upsTiming = {"duration_function_get": elapsedGet, "duration_function_post":elapsedPost};
 
        // if we have personalized links
@@ -129,8 +156,8 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
       {
       //  Post data to Cosmos DB, and get data from Cosmos DB
       //
-      let webapp_appid : string;
-      let webapp_uri : string;
+      let webapp_appid = myRegionData.get(region).webapp_appid;
+      let webapp_uri   = myRegionData.get(region).webapp_uri;
 
       switch (region)
         {
@@ -138,11 +165,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClientEASTUS === undefined)
             {
-            webapp_appid = "a9451f9d-7703-41cc-8d7a-fece0fc8e080";
             this.aadClientEASTUS = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClientEASTUS for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences-eastus.azurewebsites.net";
           aadClient = this.aadClientEASTUS;
           break;
           }
@@ -150,11 +175,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClientJAPANEAST === undefined)
             {
-            webapp_appid = "40e47863-43e3-479e-b84f-47fc97d9303a";
             this.aadClientJAPANEAST = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClientJAPANEAST for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences-japaneast.azurewebsites.net";
           aadClient = this.aadClientJAPANEAST;
           break;
           }
@@ -162,11 +185,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClientWESTUS === undefined)
             {
-            webapp_appid = "9f43acce-2a9c-4e7f-a9f4-806a5c7c8323";
             this.aadClientWESTUS = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClientWESTUS for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences-westus.azurewebsites.net";
           aadClient = this.aadClientWESTUS;
           break;
           }
@@ -174,11 +195,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClientWESTEUROPE === undefined)
             {
-            webapp_appid = "5d86e3db-8f26-47c3-822e-7d8521f5a1ea";
             this.aadClientWESTEUROPE = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClientWESTEUROPE for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences-westeurope.azurewebsites.net";
           aadClient = this.aadClientWESTEUROPE;
           break;
           }
@@ -186,11 +205,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClientBRAZILSOUTH === undefined)
             {
-            webapp_appid = "44414382-41c0-461f-ad6d-660379eacb35";
             this.aadClientBRAZILSOUTH = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClientBRAZILSOUTH for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences-brazilsouth.azurewebsites.net";
           aadClient = this.aadClientBRAZILSOUTH;
           break;
           }
@@ -198,11 +215,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClientAUSTRALIAEAST === undefined)
             {
-            webapp_appid = "a0a0a44b-bbbf-415c-a867-f207d1056cab";
             this.aadClientAUSTRALIAEAST = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClientAUSTRALIAEAST for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences-australiaeast.azurewebsites.net";
           aadClient = this.aadClientAUSTRALIAEAST;
           break;
           }
@@ -210,11 +225,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClientSOUTHINDIA === undefined)
             {
-            webapp_appid = "f038cf7a-b008-412f-8840-b25a1fbab6ff";
             this.aadClientSOUTHINDIA = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClientSOUTHINDIA for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences-southindia.azurewebsites.net";
           aadClient = this.aadClientSOUTHINDIA;
           break;
           }
@@ -223,10 +236,6 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           throw new Error ('region not implemented');
           }
         }
-
-        // create an AadHttpClient
-        //const aadClient: AadHttpClient = await this.context.aadHttpClientFactory.getClient(webapp_appid);
-        //console.log("Created aadClient for webapp_id: '" + webapp_appid + "'");
 
         const requestHeaders: Headers = new Headers();
         requestHeaders.append('Content-type', 'application/json');
@@ -237,25 +246,52 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
                                                     body:   JSON.stringify(testdata)
                                                     };
 
+        let startedAt : number;
+        let endedAt : number;
+        let elapsedPost : number;
+        let elapsedGet : number;
+        let duration_cosmos_post : number;
+        let duration_cosmos_get : number;
+        let txt : string ;
+        let o : any;
+
         console.log("posting data to cosmos db at region " + region);
-        let startedAt = Date.now();
-        let clientPostResponse: HttpClientResponse = await aadClient.post(webapp_uri + '/preferences', AadHttpClient.configurations.v1, requestOptions);
-        let endedAt = Date.now();
-        let elapsedPost = datefns.differenceInMilliseconds(endedAt, startedAt);
-        let txt : string = await clientPostResponse.text();
-        let o = txt ? JSON.parse(txt) : {};
-        let duration_cosmos_post = o.duration;
-        console.log("response from POST = " + txt);
+        startedAt = performance.now();
+        let clientPostResponse: HttpClientResponse = await aadClient.post(webapp_uri + '/api/preferences', AadHttpClient.configurations.v1, requestOptions);
+        endedAt = performance.now();
+
+        if (clientPostResponse.ok) // check POST response
+          {
+          elapsedPost = Math.round(endedAt - startedAt);
+          txt = await clientPostResponse.text();
+          o = txt ? JSON.parse(txt) : {duration: 0};
+          duration_cosmos_post = o.duration;
+          console.log("response from POST = " + txt);
+          }
+        else
+          {
+          duration_cosmos_post = 0;
+          console.log("response from POST = " + clientPostResponse.statusText);
+          }
 
         console.log("getting data from cosmos db at region "+ region);
-        startedAt = Date.now();
-        let clientGetResponse : HttpClientResponse = await aadClient.get (webapp_uri + '/preferences/user2@domain.com', AadHttpClient.configurations.v1);
-        endedAt = Date.now();
-        let elapsedGet = datefns.differenceInMilliseconds(endedAt, startedAt);
-        txt = await clientGetResponse.text();
-        o = txt ? JSON.parse(txt) : {};
-        let duration_cosmos_get = o.duration;
-        console.log("response from GET = " + txt);
+        startedAt = performance.now();
+        let clientGetResponse : HttpClientResponse = await aadClient.get (webapp_uri + '/api/preferences/user2@domain.com', AadHttpClient.configurations.v1);
+        endedAt = performance.now();
+
+        if (clientGetResponse.ok) // check GET response
+          {
+          elapsedGet = Math.round(endedAt - startedAt);
+          txt = await clientGetResponse.text();
+          o = txt ? JSON.parse(txt) : {duration: 0};
+          duration_cosmos_get = o.duration;
+          console.log("response from GET = " + txt);
+          }
+      else
+          {
+          duration_cosmos_get = 0;
+          console.log("response from GET = " + clientGetResponse.statusText);
+          }
 
         waTiming = {"duration_function_get":  (elapsedGet  - duration_cosmos_get),
                     "duration_function_post": (elapsedPost - duration_cosmos_post),
@@ -278,7 +314,8 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     });
   }
 
-  private async getWebApp2Timing (region : webAppRegion ) : Promise<IAzureFunctionTimingData>
+
+  private async getWebApp2Timing (region : webAppRegion) : Promise<IAzureFunctionTimingData>
   {
     let waTiming : IAzureFunctionTimingData;
     let aadClient : AadHttpClient;
@@ -287,8 +324,8 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
       {
       //  Post data to Cosmos DB, and get data from Cosmos DB
       //
-      let webapp_appid : string;
-      let webapp_uri : string;
+      let webapp_appid = myRegionData2.get(region).webapp_appid;
+      let webapp_uri   = myRegionData2.get(region).webapp_uri;
 
       switch (region)
         {
@@ -296,11 +333,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClient2EASTUS === undefined)
             {
-            webapp_appid = "2b23954e-b97b-41f0-88b7-de47d19fc653";
             this.aadClient2EASTUS = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClient2EASTUS for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences2-eastus.azurewebsites.net";
           aadClient = this.aadClient2EASTUS;
           break;
           }
@@ -308,11 +343,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClient2JAPANEAST === undefined)
             {
-            webapp_appid = "3d326fa7-ef51-4634-8e33-4f0cebe09b3f";
             this.aadClient2JAPANEAST = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClient2JAPANEAST for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences2-japaneast.azurewebsites.net";
           aadClient = this.aadClient2JAPANEAST;
           break;
           }
@@ -320,11 +353,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClient2WESTUS === undefined)
             {
-            webapp_appid = "93c9dfd4-848a-45a8-8997-9b21302162b5";
             this.aadClient2WESTUS = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClient2WESTUS for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences2-westus.azurewebsites.net";
           aadClient = this.aadClient2WESTUS;
           break;
           }
@@ -332,11 +363,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClient2WESTEUROPE === undefined)
             {
-            webapp_appid = "12d2973c-9945-4c53-ae09-30a79c98d18d";
             this.aadClient2WESTEUROPE = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClient2WESTEUROPE for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences2-westeurope.azurewebsites.net";
           aadClient = this.aadClient2WESTEUROPE;
           break;
           }
@@ -344,11 +373,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClient2BRAZILSOUTH === undefined)
             {
-            webapp_appid = "7b40a34c-74bb-4770-9028-90864e2a697a";
             this.aadClient2BRAZILSOUTH = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClient2BRAZILSOUTH for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences2-brazilsouth.azurewebsites.net";
           aadClient = this.aadClient2BRAZILSOUTH;
           break;
           }
@@ -356,11 +383,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClient2AUSTRALIAEAST === undefined)
             {
-            webapp_appid = "c8759268-e08c-4182-a702-e2f5a3d81063";
             this.aadClient2AUSTRALIAEAST = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClient2AUSTRALIAEAST for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences2-australiaeast.azurewebsites.net";
           aadClient = this.aadClient2AUSTRALIAEAST;
           break;
           }
@@ -368,11 +393,9 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           {
           if (this.aadClient2SOUTHINDIA === undefined)
             {
-            webapp_appid = "35144c2a-6dc4-4192-887c-6459ec4ed1bf";
             this.aadClient2SOUTHINDIA = await this.context.aadHttpClientFactory.getClient(webapp_appid);
             console.log("Created aadClient2SOUTHINDIA for webapp_id: '" + webapp_appid + "'");
             }
-          webapp_uri = "https://chiverton365-preferences2-southindia.azurewebsites.net";
           aadClient = this.aadClient2SOUTHINDIA;
           break;
           }
@@ -381,10 +404,6 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
           throw new Error ('region not implemented');
           }
         }
-
-        // create an AadHttpClient
-        //const aadClient: AadHttpClient = await this.context.aadHttpClientFactory.getClient(webapp_appid);
-        //console.log("Created aadClient for webapp_id: '" + webapp_appid + "'");
 
         const requestHeaders: Headers = new Headers();
         requestHeaders.append('Content-type', 'application/json');
@@ -395,25 +414,52 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
                                                     body:   JSON.stringify(testdata)
                                                     };
 
-        console.log("posting data to cosmos db at region " + region);
-        let startedAt = Date.now();
-        let clientPostResponse: HttpClientResponse = await aadClient.post(webapp_uri + '/preferences', AadHttpClient.configurations.v1, requestOptions);
-        let endedAt = Date.now();
-        let elapsedPost = datefns.differenceInMilliseconds(endedAt, startedAt);
-        let txt : string = await clientPostResponse.text();
-        let o = txt ? JSON.parse(txt) : {};
-        let duration_cosmos_post = o.duration;
-        console.log("response from POST2 = " + txt);
+        let startedAt : number;
+        let endedAt : number;
+        let elapsedPost : number;
+        let elapsedGet : number;
+        let duration_cosmos_post : number;
+        let duration_cosmos_get : number;
+        let txt : string ;
+        let o : any;
 
-        console.log("getting data2 from cosmos db at region "+ region);
-        startedAt = Date.now();
-        let clientGetResponse : HttpClientResponse = await aadClient.get (webapp_uri + '/preferences/user2@domain.com', AadHttpClient.configurations.v1);
-        endedAt = Date.now();
-        let elapsedGet = datefns.differenceInMilliseconds(endedAt, startedAt);
-        txt = await clientGetResponse.text();
-        o = txt ? JSON.parse(txt) : {};
-        let duration_cosmos_get = o.duration;
-        console.log("response from GET2 = " + txt);
+        console.log("posting data to cosmos db at region " + region);
+        startedAt = performance.now();
+        let clientPostResponse: HttpClientResponse = await aadClient.post(webapp_uri + '/api/preferences', AadHttpClient.configurations.v1, requestOptions);
+        endedAt = performance.now();
+
+        if (clientPostResponse.ok) // check POST response
+          {
+          elapsedPost = Math.round(endedAt - startedAt);
+          txt = await clientPostResponse.text();
+          o = txt ? JSON.parse(txt) : {duration: 0};
+          duration_cosmos_post = o.duration;
+          console.log("response from POST2 = " + txt);
+          }
+        else
+          {
+          duration_cosmos_post = 0;
+          console.log("response from POST2 = " + clientPostResponse.statusText);
+          }
+
+        console.log("getting data from cosmos db at region "+ region);
+        startedAt = performance.now();
+        let clientGetResponse : HttpClientResponse = await aadClient.get (webapp_uri + '/api/preferences/user2@domain.com', AadHttpClient.configurations.v1);
+        endedAt = performance.now();
+
+        if (clientGetResponse.ok) // check GET response
+          {
+          elapsedGet = Math.round(endedAt - startedAt);
+          txt = await clientGetResponse.text();
+          o = txt ? JSON.parse(txt) : {duration: 0};
+          duration_cosmos_get = o.duration;
+          console.log("response from GET2 = " + txt);
+          }
+      else
+          {
+          duration_cosmos_get = 0;
+          console.log("response from GET2 = " + clientGetResponse.statusText);
+          }
 
         waTiming = {"duration_function_get":  (elapsedGet  - duration_cosmos_get),
                     "duration_function_post": (elapsedPost - duration_cosmos_post),
@@ -477,9 +523,8 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
     let d28 = this.getWebApp2Timing("southindia");
 
     durationTrafficManager    = await d0;
-    //durationTrafficManager    = {webapp_uri: "https://chiverton365-preferences-eastus.azurewebsites.net", webapp_appid: "0", regionDurations: [0,106,0,0,0,0,0,0]};
-    durationUserProfile       = await d1;
 
+    durationUserProfile       = await d1;
     durationWebAppEASTUS      = await d2;
     durationWebAppWESTUS      = await d3;
     durationWebAppWESTEUROPE  = await d4;
@@ -534,7 +579,7 @@ export default class CosmodbPerfmonWebPart extends BaseClientSideWebPart<ICosmod
         headers: requestHeaders
       };
 
-      let response: HttpClientResponse = await this.context.httpClient.get("https://chiverton365-preferences.trafficmanager.net/hello", HttpClient.configurations.v1, httpClientOptions);
+      let response: HttpClientResponse = await this.context.httpClient.get("https://chiverton365-preferences.trafficmanager.net/api/hello", HttpClient.configurations.v1, httpClientOptions);
       let txt = await response.text();
       var s = txt ? JSON.parse(txt) : {};
 
